@@ -5,6 +5,6 @@
  * sorgente dati: senza quella, `useDataSource()` non avrebbe ancora nulla da
  * restituire.
  */
-export default defineNuxtPlugin(() => {
-  useAuthStore().initialise()
+export default defineNuxtPlugin(async () => {
+  await useAuthStore().initialise()
 })

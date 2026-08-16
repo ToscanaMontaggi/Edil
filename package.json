@@ -9,17 +9,24 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@pinia/nuxt": "^1.0.2",
     "@primeuix/themes": "^2.0.3",
     "@primevue/nuxt-module": "^4.5.5",
     "@vueuse/core": "^14.4.0",
     "@vueuse/nuxt": "^14.4.0",
     "apexcharts": "^6.8.0",
+    "bcryptjs": "^3.0.3",
+    "drizzle-orm": "^0.45.2",
     "nuxt": "^4.5.2",
+    "nuxt-auth-utils": "^0.5.30",
     "pinia": "^4.0.3",
-    "@pinia/nuxt": "^1.0.2",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.5",
     "vue": "^3.5.0",
@@ -28,8 +35,9 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.10"
   }
 }
-

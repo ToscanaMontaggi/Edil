@@ -5,10 +5,10 @@ export default defineNuxtConfig({
    * Applicazione a pagina singola, senza render lato server.
    *
    * E' un gestionale interno dietro login: nessuna pagina deve essere indicizzata
-   * e non c'e' nulla da mostrare a un utente non autenticato. Rinunciando all'SSR
-   * si evita di dover gestire la sessione sul server, il deploy resta un
-   * caricamento di file statici su Firebase Hosting e la PWA con modalita'
-   * offline diventa molto piu' semplice da realizzare.
+   * e non c'e' nulla da mostrare a un utente non autenticato. Le rotte API sotto
+   * server/api/** girano comunque come funzioni serverless su Vercel a
+   * prescindere da questo flag: ssr:false riguarda solo il rendering delle
+   * pagine, non l'esistenza delle API Nitro.
    */
   ssr: false,
 
@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module',
     '@pinia/nuxt',
     '@vueuse/nuxt',
+    'nuxt-auth-utils',
   ],
 
   css: [

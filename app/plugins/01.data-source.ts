@@ -1,15 +1,14 @@
-import { createMemoryDataSource } from '~/infrastructure/memory'
+import { createHttpDataSource } from '~/infrastructure/http'
 
 /**
  * Composizione delle dipendenze dell'applicazione.
  *
  * Questo e' l'unico punto che sa quale implementazione concreta viene usata.
- * Per passare a Firebase si sostituisce la sola riga qui sotto con
- * `createFirebaseDataSource()`: store, composable e componenti non cambiano,
- * perche' conoscono soltanto l'interfaccia DataSource.
+ * Store, composable e componenti non cambiano, perche' conoscono soltanto
+ * l'interfaccia DataSource.
  */
 export default defineNuxtPlugin(() => {
-  const dataSource = createMemoryDataSource()
+  const dataSource = createHttpDataSource()
 
   return {
     provide: { dataSource },

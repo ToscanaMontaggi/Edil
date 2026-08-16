@@ -19,8 +19,16 @@ export const useAuthStore = defineStore('auth', () => {
 
   let unsubscribe: (() => void) | null = null
 
-  /** Si aggancia ai cambi di sessione. Chiamata una volta sola dal plugin di avvio. */
-  function initialise(): void {
+  /**
+   * Si aggancia ai cambi di sessione. Chiamata una volta sola dal plugin di avvio.
+   *
+   * Attende anche l'eventuale verifica asincrona della sessione (proprieta'
+   * duck-typed `ready`, esposta da HttpAuthPort perche' un cookie di sessione
+   * non e' noto in modo sincrono come lo era il localStorage della demo): senza
+   * questa attesa, un refresh a pagina protetta lampeggerebbe sul login prima
+   * di scoprire che l'utente era gia' loggato.
+   */
+  async function initialise(): Promise<void> {
     if (unsubscribe) return
 
     const { auth } = useDataSource()
@@ -28,6 +36,10 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = nextUser
       initialising.value = false
     })
+
+    if ('ready' in auth) {
+      await (auth as { ready: Promise<void> }).ready
+    }
   }
 
   async function signIn(credentials: Credentials): Promise<void> {

@@ -5,8 +5,8 @@ useHead({ title: 'Accedi — Dinelli Srl' })
 const auth = useAuthStore()
 const route = useRoute()
 
-const email = ref('alessandro@dinellisrl.it')
-const password = ref('dinelli2026')
+const email = ref('')
+const password = ref('')
 const submitted = ref(false)
 
 const emailInvalid = computed(() => submitted.value && !email.value.includes('@'))
@@ -90,13 +90,6 @@ async function submit(): Promise<void> {
         </form>
       </template>
     </Card>
-
-    <Message severity="info" variant="simple" size="small" class="login__hint">
-      <i class="pi pi-info-circle" />
-      Accesso dimostrativo: i dati sono generati in locale e non c'e' ancora
-      nessun server collegato. Va bene qualunque email con una password di
-      almeno sei caratteri.
-    </Message>
   </div>
 </template>
 
@@ -105,18 +98,6 @@ async function submit(): Promise<void> {
   display: flex;
   justify-content: center;
   padding-bottom: var(--space-2);
-}
-
-.login__hint {
-  display: flex;
-  gap: 0.5rem;
-  align-items: flex-start;
-  line-height: 1.5;
-  text-align: left;
-}
-
-.login__hint i {
-  margin-top: 2px;
 }
 
 label {
