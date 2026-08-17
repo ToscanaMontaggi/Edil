@@ -2,6 +2,7 @@ import type { Cents, DateKey, ExpenseCategory, Invoice, Site } from '~/core/doma
 import {
   DateKeys,
   EXPENSE_CATEGORY_COLORS,
+  FIXED_EXPENSE_LEDGER_COLOR,
   LABOR_COLOR,
   Money,
   MonthKeys,
@@ -29,7 +30,7 @@ import {
  * gireranno dentro una Cloud Function per produrre gli aggregati salvati.
  */
 export function useDashboardMetrics() {
-  const { sites, employees, worklogs, expenses, invoices, loading, loadAll } = useAppData()
+  const { sites, employees, worklogs, expenses, fixedExpenses, invoices, loading, loadAll } = useAppData()
 
   const today = DateKeys.today()
   const currentMonth = MonthKeys.current()
@@ -72,6 +73,7 @@ export function useDashboardMetrics() {
   const monthTotals = computed(() => calculatePeriodTotals({
     worklogs: inMonth(worklogs.items, currentMonth),
     expenses: inMonth(expenses.items, currentMonth),
+    fixedExpenses: inMonth(fixedExpenses.items, currentMonth),
     invoices: inMonth(invoices.items, currentMonth),
   }))
 
@@ -96,6 +98,7 @@ export function useDashboardMetrics() {
     return calculatePeriodTotals({
       worklogs: withinRange(worklogs.items, range),
       expenses: withinRange(expenses.items, range),
+      fixedExpenses: withinRange(fixedExpenses.items, range),
       invoices: withinRange(invoices.items, range),
     })
   })
@@ -111,6 +114,7 @@ export function useDashboardMetrics() {
   const monthlySeries = computed(() => calculateMonthlySeries({
     worklogs: worklogs.items,
     expenses: expenses.items,
+    fixedExpenses: fixedExpenses.items,
     invoices: invoices.items,
     months: 12,
   }))
@@ -145,10 +149,12 @@ export function useDashboardMetrics() {
     const from = MonthKeys.firstDay(MonthKeys.addMonths(currentMonth, -11))
 
     const periodExpenses = expenses.items.filter(expense => expense.date >= from)
+    const periodFixedExpenses = fixedExpenses.items.filter(expense => expense.date >= from)
     const periodWorklogs = worklogs.items.filter(worklog => worklog.date >= from)
 
     const byCategory = groupExpensesByCategory(periodExpenses)
     const labor = Money.sum(periodWorklogs.map(worklog => worklog.laborCostCents))
+    const fixed = Money.sum(periodFixedExpenses.map(expense => expense.amountCents))
 
     const entries: Array<{ label: string, value: Cents, color: string }> = [
       { label: 'Manodopera', value: labor, color: LABOR_COLOR },
@@ -158,6 +164,7 @@ export function useDashboardMetrics() {
           value,
           color: EXPENSE_CATEGORY_COLORS[category as ExpenseCategory],
         })),
+      { label: 'Spese fisse', value: fixed, color: FIXED_EXPENSE_LEDGER_COLOR },
     ]
 
     return entries.filter(entry => !Money.isZero(entry.value))

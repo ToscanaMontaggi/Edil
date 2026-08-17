@@ -5,6 +5,7 @@ import type { DateKey, MonthKey } from '../value-objects/date-key'
 import { DateKeys, MonthKeys } from '../value-objects/date-key'
 import type { Worklog } from '../entities/worklog'
 import type { Expense } from '../entities/expense'
+import type { FixedExpense } from '../entities/fixed-expense'
 import type { Invoice } from '../entities/invoice'
 import { invoiceSignedAmount } from '../entities/invoice'
 import type { DateRange } from '../entities/common'
@@ -18,6 +19,8 @@ import { sumLaborCost, sumTotalMinutes } from './labor-cost'
 export interface PeriodTotals {
   laborCents: Cents
   expensesCents: Cents
+  /** Spese fisse (affitto, utenze, assicurazioni...) cadute nel periodo: non sono di cantiere ma pesano sui costi dell'impresa. */
+  fixedExpensesCents: Cents
   totalCostCents: Cents
   invoicedCents: Cents
   marginCents: Cents
@@ -44,16 +47,19 @@ export function inMonth<T extends { date: DateKey }>(items: readonly T[], month:
 export function calculatePeriodTotals(input: {
   worklogs: readonly Worklog[]
   expenses: readonly Expense[]
+  fixedExpenses: readonly FixedExpense[]
   invoices: readonly Invoice[]
 }): PeriodTotals {
   const laborCents = sumLaborCost(input.worklogs)
   const expensesCents = Money.sum(input.expenses.map(expense => expense.amountCents))
-  const totalCostCents = Money.add(laborCents, expensesCents)
+  const fixedExpensesCents = Money.sum(input.fixedExpenses.map(expense => expense.amountCents))
+  const totalCostCents = Money.add(Money.add(laborCents, expensesCents), fixedExpensesCents)
   const invoicedCents = Money.sum(input.invoices.map(invoiceSignedAmount))
 
   return {
     laborCents,
     expensesCents,
+    fixedExpensesCents,
     totalCostCents,
     invoicedCents,
     marginCents: Money.subtract(invoicedCents, totalCostCents),
@@ -69,17 +75,19 @@ export function calculatePeriodTotals(input: {
 export function calculateMonthlySeries(input: {
   worklogs: readonly Worklog[]
   expenses: readonly Expense[]
+  fixedExpenses: readonly FixedExpense[]
   invoices: readonly Invoice[]
   months: number
   until?: MonthKey
 }): MonthlyTotals[] {
-  const { worklogs, expenses, invoices, months, until } = input
+  const { worklogs, expenses, fixedExpenses, invoices, months, until } = input
 
   return MonthKeys.lastMonths(months, until).map(month => ({
     month,
     ...calculatePeriodTotals({
       worklogs: inMonth(worklogs, month),
       expenses: inMonth(expenses, month),
+      fixedExpenses: inMonth(fixedExpenses, month),
       invoices: inMonth(invoices, month),
     }),
   }))

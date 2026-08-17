@@ -53,3 +53,6 @@ export const FIXED_EXPENSE_CATEGORY_COLORS: Record<FixedExpenseCategory, string>
 export function fixedExpenseCategoryLabel(category: FixedExpenseCategory): string {
   return FIXED_EXPENSE_CATEGORY_OPTIONS.find(option => option.value === category)?.label ?? category
 }
+
+/** Colore per il totale spese fisse nei grafici che le mostrano come un'unica voce, non per categoria. */
+export const FIXED_EXPENSE_LEDGER_COLOR = '#0ea5e9'

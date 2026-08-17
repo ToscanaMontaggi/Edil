@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DateKeys, Money, MonthKeys, siteLabel } from '~/core/domain'
+import { DateKeys, FIXED_EXPENSE_LEDGER_COLOR, Money, MonthKeys, siteLabel } from '~/core/domain'
 import { useDashboardMetrics } from '~/features/dashboard/useDashboardMetrics'
 
 useHead({ title: 'Dashboard — Dinelli Srl' })
@@ -65,10 +65,11 @@ const monthlyChart = computed(() => ({
   series: [
     { name: 'Manodopera', data: monthlySeries.value.map(entry => Money.toEuro(entry.laborCents)) },
     { name: 'Altri costi', data: monthlySeries.value.map(entry => Money.toEuro(entry.expensesCents)) },
+    { name: 'Spese fisse', data: monthlySeries.value.map(entry => Money.toEuro(entry.fixedExpensesCents)) },
     { name: 'Fatturato', data: monthlySeries.value.map(entry => Money.toEuro(entry.invoicedCents)) },
   ],
   options: {
-    colors: ['#ef4444', '#f59e0b', '#10b981'],
+    colors: ['#ef4444', '#f59e0b', FIXED_EXPENSE_LEDGER_COLOR, '#10b981'],
     plotOptions: {
       bar: { columnWidth: '58%', borderRadius: 4, borderRadiusApplication: 'end' as const },
     },
