@@ -383,7 +383,8 @@ const SUPPLIERS: Record<ExpenseCategory, string[]> = {
   noleggi: ['Noleggi Bresciani', 'Rent Cantiere Spa', 'Autogru Zanetti'],
   attrezzature: ['Utensileria Moretti', 'Hilti Store Brescia'],
   subappalti: ['Impianti Elettrici Fontana', 'Idraulica Belotti Snc', 'Cartongessi Sala'],
-  varie: ['Assicurazioni Generali', 'Studio Tecnico Manzoni', 'Cancelleria Ufficio'],
+  spese_fisse: ['Assicurazioni Generali', 'Immobiliare Uffici Srl', 'Leasing Automezzi'],
+  varie: ['Studio Tecnico Manzoni', 'Cancelleria Ufficio'],
 }
 
 const DESCRIPTIONS: Record<ExpenseCategory, string[]> = {
@@ -393,6 +394,7 @@ const DESCRIPTIONS: Record<ExpenseCategory, string[]> = {
   noleggi: ['Noleggio ponteggi', 'Noleggio escavatore', 'Autogru giornata', 'Piattaforma aerea'],
   attrezzature: ['Utensili elettrici', 'Ricambi betoniera', 'DPI e caschi'],
   subappalti: ['Impianto elettrico', 'Impianto idraulico', 'Controsoffitti in cartongesso'],
+  spese_fisse: ['Quota affitto ammortizzata', 'Quota assicurazione ammortizzata', 'Quota leasing ammortizzata'],
   varie: ['Polizza cantiere', 'Pratica edilizia', 'Spese amministrative'],
 }
 
@@ -404,6 +406,7 @@ const CATEGORY_WEIGHTS: Array<{ category: ExpenseCategory, weight: number, min: 
   { category: 'carburante', weight: 12, min: 120, max: 850 },
   { category: 'smaltimenti', weight: 10, min: 300, max: 2600 },
   { category: 'attrezzature', weight: 8, min: 150, max: 1800 },
+  { category: 'spese_fisse', weight: 5, min: 200, max: 1500 },
   { category: 'varie', weight: 5, min: 90, max: 1200 },
 ]
 
