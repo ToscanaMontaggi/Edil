@@ -28,6 +28,7 @@ export function createMemoryDataSource(): DataSource {
     phases: new InMemorySitePhaseRepository(data.phases),
     worklogs: new InMemoryWorklogRepository(data.worklogs),
     expenses: new InMemoryExpenseRepository(data.expenses),
+    fixedExpenses: new InMemoryRepository(data.fixedExpenses),
     invoices: new InMemoryInvoiceRepository(data.invoices),
   }
 }

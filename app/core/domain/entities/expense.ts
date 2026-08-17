@@ -9,7 +9,6 @@ export type ExpenseCategory =
   | 'noleggi'
   | 'attrezzature'
   | 'subappalti'
-  | 'spese_fisse'
   | 'varie'
 
 /**
@@ -52,7 +51,6 @@ export const EXPENSE_CATEGORY_OPTIONS: SelectOption<ExpenseCategory>[] = [
   { label: 'Noleggi', value: 'noleggi', icon: 'pi pi-truck' },
   { label: 'Attrezzature', value: 'attrezzature', icon: 'pi pi-wrench' },
   { label: 'Subappalti', value: 'subappalti', icon: 'pi pi-users' },
-  { label: 'Spese fisse', value: 'spese_fisse', icon: 'pi pi-building' },
   { label: 'Spese varie', value: 'varie', icon: 'pi pi-ellipsis-h' },
 ]
 
@@ -68,7 +66,6 @@ export const EXPENSE_CATEGORY_COLORS: Record<ExpenseCategory, string> = {
   noleggi: '#8b5cf6',
   attrezzature: '#06b6d4',
   subappalti: '#ec4899',
-  spese_fisse: '#14b8a6',
   varie: '#94a3b8',
 }
 

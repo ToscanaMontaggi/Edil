@@ -53,6 +53,12 @@ export const NAVIGATION: readonly NavigationItem[] = [
     to: '/costi',
   },
   {
+    label: 'Spese fisse',
+    description: 'Costi generali da ammortizzare sui cantieri',
+    icon: 'pi pi-building',
+    to: '/spese-fisse',
+  },
+  {
     label: 'Fatture',
     description: 'SAL, saldi e incassi',
     icon: 'pi pi-file-check',

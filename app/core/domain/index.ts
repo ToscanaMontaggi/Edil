@@ -16,6 +16,7 @@ export * from './entities/employee'
 export * from './entities/site'
 export * from './entities/worklog'
 export * from './entities/expense'
+export * from './entities/fixed-expense'
 export * from './entities/invoice'
 
 export * from './services/labor-cost'

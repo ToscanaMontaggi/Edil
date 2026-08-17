@@ -5,6 +5,7 @@ import type {
   EmployeeRate,
   Expense,
   ExpenseCategory,
+  FixedExpense,
   Invoice,
   Site,
   SitePhase,
@@ -15,6 +16,7 @@ import {
   DateKeys,
   Duration,
   Money,
+  MonthKeys,
   calculateLaborCost,
   rateAt,
   snapshotRate,
@@ -39,6 +41,7 @@ export interface DemoData {
   phases: SitePhase[]
   worklogs: Worklog[]
   expenses: Expense[]
+  fixedExpenses: FixedExpense[]
   invoices: Invoice[]
 }
 
@@ -383,8 +386,7 @@ const SUPPLIERS: Record<ExpenseCategory, string[]> = {
   noleggi: ['Noleggi Bresciani', 'Rent Cantiere Spa', 'Autogru Zanetti'],
   attrezzature: ['Utensileria Moretti', 'Hilti Store Brescia'],
   subappalti: ['Impianti Elettrici Fontana', 'Idraulica Belotti Snc', 'Cartongessi Sala'],
-  spese_fisse: ['Assicurazioni Generali', 'Immobiliare Uffici Srl', 'Leasing Automezzi'],
-  varie: ['Studio Tecnico Manzoni', 'Cancelleria Ufficio'],
+  varie: ['Assicurazioni Generali', 'Studio Tecnico Manzoni', 'Cancelleria Ufficio'],
 }
 
 const DESCRIPTIONS: Record<ExpenseCategory, string[]> = {
@@ -394,7 +396,6 @@ const DESCRIPTIONS: Record<ExpenseCategory, string[]> = {
   noleggi: ['Noleggio ponteggi', 'Noleggio escavatore', 'Autogru giornata', 'Piattaforma aerea'],
   attrezzature: ['Utensili elettrici', 'Ricambi betoniera', 'DPI e caschi'],
   subappalti: ['Impianto elettrico', 'Impianto idraulico', 'Controsoffitti in cartongesso'],
-  spese_fisse: ['Quota affitto ammortizzata', 'Quota assicurazione ammortizzata', 'Quota leasing ammortizzata'],
   varie: ['Polizza cantiere', 'Pratica edilizia', 'Spese amministrative'],
 }
 
@@ -406,7 +407,6 @@ const CATEGORY_WEIGHTS: Array<{ category: ExpenseCategory, weight: number, min: 
   { category: 'carburante', weight: 12, min: 120, max: 850 },
   { category: 'smaltimenti', weight: 10, min: 300, max: 2600 },
   { category: 'attrezzature', weight: 8, min: 150, max: 1800 },
-  { category: 'spese_fisse', weight: 5, min: 200, max: 1500 },
   { category: 'varie', weight: 5, min: 90, max: 1200 },
 ]
 
@@ -563,6 +563,48 @@ function buildInvoices(today: DateKey): Invoice[] {
   return invoices
 }
 
+// ---------------------------------------------------------------- spese fisse
+
+/** Canoni ricorrenti dell'impresa: stesso importo ogni mese, per gli ultimi 12 mesi. */
+const RECURRING_FIXED_EXPENSES: Array<{ category: FixedExpense['category'], description: string, supplier: string, amountEuro: number }> = [
+  { category: 'affitto', description: 'Canone deposito e uffici', supplier: 'Immobiliare Brixia Srl', amountEuro: 1450 },
+  { category: 'utenze', description: 'Energia elettrica e gas deposito', supplier: 'Enel Energia', amountEuro: 380 },
+  { category: 'assicurazioni', description: 'Polizza RC aziendale', supplier: 'Assicurazioni Generali', amountEuro: 290 },
+  { category: 'leasing', description: 'Rata leasing furgoni', supplier: 'Leasys Spa', amountEuro: 620 },
+  { category: 'personale', description: 'Stipendio amministrazione', supplier: 'Studio Paghe Ferrari', amountEuro: 1850 },
+]
+
+function buildFixedExpenses(today: DateKey): FixedExpense[] {
+  const random = createRandom(SEED + 11)
+  const expenses: FixedExpense[] = []
+  let counter = 0
+
+  for (const month of MonthKeys.lastMonths(12, DateKeys.month(today))) {
+    for (const item of RECURRING_FIXED_EXPENSES) {
+      counter += 1
+      // Data la piu' o meno lo stesso giorno del mese, con qualche giorno di scarto.
+      const date = DateKeys.addDays(MonthKeys.firstDay(month), random.int(0, 4)) as DateKey
+      if (date > today) continue
+
+      expenses.push({
+        id: `fexp-${counter}`,
+        createdAt: `${date}T09:00:00.000Z`,
+        updatedAt: `${date}T09:00:00.000Z`,
+        date,
+        category: item.category,
+        description: item.description,
+        supplier: item.supplier,
+        // Piccola variazione mensile: le utenze e la benzina non sono mai identiche.
+        amountCents: Money.fromEuro(Math.round(item.amountEuro * (0.94 + random.next() * 0.12))),
+        documentRef: `FT ${random.int(100, 9999)}/${DateKeys.year(date)}`,
+        notes: '',
+      })
+    }
+  }
+
+  return expenses
+}
+
 // ---------------------------------------------------------------- assemblaggio
 
 export function buildDemoData(today: DateKey = DateKeys.today()): DemoData {
@@ -582,6 +624,7 @@ export function buildDemoData(today: DateKey = DateKeys.today()): DemoData {
     phases,
     worklogs,
     expenses: buildExpenses(phases, worklogs, today),
+    fixedExpenses: buildFixedExpenses(today),
     invoices: buildInvoices(today),
   }
 }

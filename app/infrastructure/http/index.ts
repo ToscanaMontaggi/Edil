@@ -22,6 +22,7 @@ export function createHttpDataSource(): DataSource {
     phases: new HttpSitePhaseRepository('/api/phases'),
     worklogs: new HttpWorklogRepository('/api/worklogs'),
     expenses: new HttpExpenseRepository('/api/expenses'),
+    fixedExpenses: new HttpRepository('/api/fixed-expenses'),
     invoices: new HttpInvoiceRepository('/api/invoices'),
   }
 }

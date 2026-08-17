@@ -3,6 +3,7 @@ import type {
   ClientRepository,
   EmployeeRepository,
   ExpenseRepository,
+  FixedExpenseRepository,
   InvoiceRepository,
   SitePhaseRepository,
   SiteRepository,
@@ -27,5 +28,6 @@ export interface DataSource {
   phases: SitePhaseRepository
   worklogs: WorklogRepository
   expenses: ExpenseRepository
+  fixedExpenses: FixedExpenseRepository
   invoices: InvoiceRepository
 }

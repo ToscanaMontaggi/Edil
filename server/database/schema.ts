@@ -123,6 +123,21 @@ export const expenses = pgTable('expenses', {
   index('expenses_date_idx').on(table.date),
 ])
 
+export const fixedExpenses = pgTable('fixed_expenses', {
+  id: text('id').primaryKey(),
+  date: date('date').notNull(),
+  category: text('category').notNull(),
+  description: text('description').notNull().default(''),
+  amountCents: bigint('amount_cents', { mode: 'number' }).notNull().default(0),
+  supplier: text('supplier').notNull().default(''),
+  documentRef: text('document_ref').notNull().default(''),
+  notes: text('notes').notNull().default(''),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => [
+  index('fixed_expenses_date_idx').on(table.date),
+])
+
 export const invoices = pgTable('invoices', {
   id: text('id').primaryKey(),
   clientId: text('client_id').notNull().references(() => clients.id),

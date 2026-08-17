@@ -6,6 +6,7 @@ import type {
   Entity,
   EntityId,
   Expense,
+  FixedExpense,
   Invoice,
   Patch,
   Site,
@@ -69,6 +70,8 @@ export interface ExpenseRepository extends CrudRepository<Expense> {
   listByRange(range: DateRange): Promise<Expense[]>
   listBySite(siteId: EntityId): Promise<Expense[]>
 }
+
+export type FixedExpenseRepository = CrudRepository<FixedExpense>
 
 export interface InvoiceRepository extends CrudRepository<Invoice> {
   listBySite(siteId: EntityId): Promise<Invoice[]>

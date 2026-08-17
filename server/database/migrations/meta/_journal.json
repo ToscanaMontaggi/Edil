@@ -8,6 +8,13 @@
       "when": 1786918519443,
       "tag": "0000_fixed_ricochet",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786972122431,
+      "tag": "0001_rich_true_believers",
+      "breakpoints": true
     }
   ]
 }
