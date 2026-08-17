@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ExpenseCategory } from '~/core/domain'
+import type { ExpenseCategory, SiteStatus } from '~/core/domain'
 import {
   DateKeys,
   EXPENSE_CATEGORY_COLORS,
@@ -16,6 +16,8 @@ import {
 
 const route = useRoute()
 const format = useFormat()
+const notify = useNotify()
+const confirmDelete = useConfirmDelete()
 const siteId = computed(() => String(route.params.id))
 
 const { sites, clients, phases, employees, worklogs, expenses, invoices, loading, loadAll } = useAppData()
@@ -26,6 +28,35 @@ const site = computed(() => sites.find(siteId.value))
 const client = computed(() => (site.value ? clients.find(site.value.clientId) : null))
 
 useHead({ title: () => `${site.value?.name ?? 'Cantiere'} — Dinelli Srl` })
+
+async function updateStatus(status: SiteStatus): Promise<void> {
+  if (!site.value || status === site.value.status) return
+  try {
+    await sites.update(site.value.id, { status })
+    notify.saved()
+  }
+  catch {
+    notify.error('Modifica dello stato non riuscita.')
+  }
+}
+
+async function deleteSite(): Promise<void> {
+  if (!site.value) return
+  const confirmed = await confirmDelete({
+    what: `il cantiere ${site.value.name}`,
+    consequence: 'Ore, costi e fatture collegati restano ma perderanno il collegamento a questo cantiere.',
+  })
+  if (!confirmed) return
+
+  try {
+    await sites.remove(site.value.id)
+    notify.deleted()
+    await navigateTo('/cantieri')
+  }
+  catch {
+    notify.error('Eliminazione non riuscita.')
+  }
+}
 
 const siteWorklogs = computed(() => worklogs.items.filter(worklog => worklog.siteId === siteId.value))
 const siteExpenses = computed(() => expenses.items.filter(expense => expense.siteId === siteId.value))
@@ -130,7 +161,21 @@ const costChart = computed(() => {
       back-to="/cantieri"
     >
       <template #actions>
-        <AppStatusTag :value="site.status" :options="SITE_STATUS_OPTIONS" show-icon />
+        <Select
+          :model-value="site.status"
+          :options="SITE_STATUS_OPTIONS"
+          option-label="label"
+          option-value="value"
+          :disabled="sites.saving"
+          @update:model-value="updateStatus"
+        />
+        <Button
+          icon="pi pi-trash"
+          severity="danger"
+          outlined
+          aria-label="Elimina cantiere"
+          @click="deleteSite"
+        />
       </template>
     </AppPageHeader>
 
