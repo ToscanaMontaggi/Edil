@@ -4,12 +4,14 @@ import type {
   EntityId,
   Expense,
   Invoice,
+  ScheduleEntry,
   SitePhase,
   Worklog,
 } from '~/core/domain'
 import type {
   ExpenseRepository,
   InvoiceRepository,
+  ScheduleRepository,
   SitePhaseRepository,
   WorklogRepository,
 } from '~/core/ports'
@@ -40,6 +42,12 @@ export class HttpWorklogRepository extends HttpRepository<Worklog> implements Wo
 
   async createMany(drafts: Draft<Worklog>[]): Promise<Worklog[]> {
     return $fetch<Worklog[]>(`${this.basePath}/batch`, { method: 'POST', body: { drafts } })
+  }
+}
+
+export class HttpScheduleRepository extends HttpRepository<ScheduleEntry> implements ScheduleRepository {
+  async listByRange(range: DateRange): Promise<ScheduleEntry[]> {
+    return $fetch<ScheduleEntry[]>(this.basePath, { query: { from: range.from, to: range.to } })
   }
 }
 

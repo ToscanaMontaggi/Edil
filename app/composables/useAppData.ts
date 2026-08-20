@@ -15,11 +15,12 @@ export function useAppData() {
   const sites = useSitesStore()
   const phases = usePhasesStore()
   const worklogs = useWorklogsStore()
+  const schedule = useScheduleStore()
   const expenses = useExpensesStore()
   const fixedExpenses = useFixedExpensesStore()
   const invoices = useInvoicesStore()
 
-  const stores = [clients, employees, sites, phases, worklogs, expenses, fixedExpenses, invoices]
+  const stores = [clients, employees, sites, phases, worklogs, schedule, expenses, fixedExpenses, invoices]
 
   const loading = computed(() => stores.some(store => store.loading))
   const error = computed(() => stores.find(store => store.error)?.error ?? null)
@@ -35,6 +36,7 @@ export function useAppData() {
     sites,
     phases,
     worklogs,
+    schedule,
     expenses,
     fixedExpenses,
     invoices,

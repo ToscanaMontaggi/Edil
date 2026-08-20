@@ -40,6 +40,12 @@ export const NAVIGATION: readonly NavigationItem[] = [
     primary: true,
   },
   {
+    label: 'Programmazione',
+    description: 'Pianificazione mensile delle ore per cantiere',
+    icon: 'pi pi-calendar',
+    to: '/programmazione',
+  },
+  {
     label: 'Operai',
     description: 'Anagrafica e costi orari',
     icon: 'pi pi-users',

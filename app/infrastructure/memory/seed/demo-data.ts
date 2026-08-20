@@ -7,6 +7,7 @@ import type {
   ExpenseCategory,
   FixedExpense,
   Invoice,
+  ScheduleEntry,
   Site,
   SitePhase,
   Worklog,
@@ -40,6 +41,7 @@ export interface DemoData {
   sites: Site[]
   phases: SitePhase[]
   worklogs: Worklog[]
+  schedule: ScheduleEntry[]
   expenses: Expense[]
   fixedExpenses: FixedExpense[]
   invoices: Invoice[]
@@ -377,6 +379,47 @@ function buildWorklogs(employees: Employee[], phases: SitePhase[], today: DateKe
   return worklogs
 }
 
+// ---------------------------------------------------------------- programmazione
+
+/**
+ * Programmazione futura: qualche settimana di previsioni sui cantieri attivi.
+ * A differenza delle ore, guarda avanti nel tempo invece che indietro.
+ */
+function buildScheduleEntries(today: DateKey): ScheduleEntry[] {
+  const random = createRandom(SEED + 17)
+  const entries: ScheduleEntry[] = []
+  let counter = 0
+
+  const horizon = DateKeys.addDays(today, 42)
+
+  for (const spec of SITE_SPECS) {
+    if (spec.status !== 'attivo' || spec.crew.length === 0) continue
+
+    let cursor = today
+    while (cursor <= horizon) {
+      const date = DateKeys.toDate(cursor)
+
+      if (isWorkingDay(date) && !isHoliday(cursor) && random.chance(spec.intensity)) {
+        counter += 1
+        const plannedHours = random.pick([4, 6, 7, 8, 8, 8])
+        entries.push({
+          id: `sch-${counter}`,
+          createdAt: `${today}T07:00:00.000Z`,
+          updatedAt: `${today}T07:00:00.000Z`,
+          date: cursor,
+          siteId: spec.id,
+          plannedMinutes: Duration.fromHours(plannedHours),
+          notes: '',
+        })
+      }
+
+      cursor = DateKeys.addDays(cursor, 1)
+    }
+  }
+
+  return entries
+}
+
 // ---------------------------------------------------------------- costi
 
 const SUPPLIERS: Record<ExpenseCategory, string[]> = {
@@ -623,6 +666,7 @@ export function buildDemoData(today: DateKey = DateKeys.today()): DemoData {
     sites,
     phases,
     worklogs,
+    schedule: buildScheduleEntries(today),
     expenses: buildExpenses(phases, worklogs, today),
     fixedExpenses: buildFixedExpenses(today),
     invoices: buildInvoices(today),

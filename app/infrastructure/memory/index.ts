@@ -3,6 +3,7 @@ import { InMemoryRepository } from './in-memory-repository'
 import {
   InMemoryExpenseRepository,
   InMemoryInvoiceRepository,
+  InMemoryScheduleRepository,
   InMemorySitePhaseRepository,
   InMemoryWorklogRepository,
 } from './repositories'
@@ -27,6 +28,7 @@ export function createMemoryDataSource(): DataSource {
     sites: new InMemoryRepository(data.sites),
     phases: new InMemorySitePhaseRepository(data.phases),
     worklogs: new InMemoryWorklogRepository(data.worklogs),
+    schedule: new InMemoryScheduleRepository(data.schedule),
     expenses: new InMemoryExpenseRepository(data.expenses),
     fixedExpenses: new InMemoryRepository(data.fixedExpenses),
     invoices: new InMemoryInvoiceRepository(data.invoices),

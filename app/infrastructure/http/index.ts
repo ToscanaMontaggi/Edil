@@ -4,6 +4,7 @@ import { HttpRepository } from './http-repository'
 import {
   HttpExpenseRepository,
   HttpInvoiceRepository,
+  HttpScheduleRepository,
   HttpSitePhaseRepository,
   HttpWorklogRepository,
 } from './http-repositories'
@@ -21,6 +22,7 @@ export function createHttpDataSource(): DataSource {
     sites: new HttpRepository('/api/sites'),
     phases: new HttpSitePhaseRepository('/api/phases'),
     worklogs: new HttpWorklogRepository('/api/worklogs'),
+    schedule: new HttpScheduleRepository('/api/schedule'),
     expenses: new HttpExpenseRepository('/api/expenses'),
     fixedExpenses: new HttpRepository('/api/fixed-expenses'),
     invoices: new HttpInvoiceRepository('/api/invoices'),

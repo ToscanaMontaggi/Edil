@@ -9,6 +9,7 @@ import type {
   FixedExpense,
   Invoice,
   Patch,
+  ScheduleEntry,
   Site,
   SitePhase,
   Worklog,
@@ -64,6 +65,10 @@ export interface WorklogRepository extends CrudRepository<Worklog> {
    * Firestore di usare un batch write invece di N chiamate separate.
    */
   createMany(drafts: Draft<Worklog>[]): Promise<Worklog[]>
+}
+
+export interface ScheduleRepository extends CrudRepository<ScheduleEntry> {
+  listByRange(range: DateRange): Promise<ScheduleEntry[]>
 }
 
 export interface ExpenseRepository extends CrudRepository<Expense> {

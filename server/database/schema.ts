@@ -104,6 +104,19 @@ export const worklogs = pgTable('worklogs', {
   index('worklogs_date_idx').on(table.date),
 ])
 
+export const scheduleEntries = pgTable('schedule_entries', {
+  id: text('id').primaryKey(),
+  date: date('date').notNull(),
+  siteId: text('site_id').notNull().references(() => sites.id),
+  plannedMinutes: integer('planned_minutes').notNull().default(0),
+  notes: text('notes').notNull().default(''),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => [
+  index('schedule_entries_site_id_idx').on(table.siteId),
+  index('schedule_entries_date_idx').on(table.date),
+])
+
 export const expenses = pgTable('expenses', {
   id: text('id').primaryKey(),
   date: date('date').notNull(),

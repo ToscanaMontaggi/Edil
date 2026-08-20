@@ -5,6 +5,7 @@ import type {
   ExpenseRepository,
   FixedExpenseRepository,
   InvoiceRepository,
+  ScheduleRepository,
   SitePhaseRepository,
   SiteRepository,
   WorklogRepository,
@@ -27,6 +28,7 @@ export interface DataSource {
   sites: SiteRepository
   phases: SitePhaseRepository
   worklogs: WorklogRepository
+  schedule: ScheduleRepository
   expenses: ExpenseRepository
   fixedExpenses: FixedExpenseRepository
   invoices: InvoiceRepository

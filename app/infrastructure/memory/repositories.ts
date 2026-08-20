@@ -4,6 +4,7 @@ import type {
   EntityId,
   Expense,
   Invoice,
+  ScheduleEntry,
   SitePhase,
   Worklog,
 } from '~/core/domain'
@@ -11,6 +12,7 @@ import { DateKeys } from '~/core/domain'
 import type {
   ExpenseRepository,
   InvoiceRepository,
+  ScheduleRepository,
   SitePhaseRepository,
   WorklogRepository,
 } from '~/core/ports'
@@ -66,6 +68,17 @@ export class InMemoryWorklogRepository
 
   async createMany(drafts: Draft<Worklog>[]): Promise<Worklog[]> {
     return this.createBatch(drafts)
+  }
+}
+
+export class InMemoryScheduleRepository
+  extends InMemoryRepository<ScheduleEntry>
+  implements ScheduleRepository {
+  async listByRange(range: DateRange): Promise<ScheduleEntry[]> {
+    const entries = this.all()
+      .filter(entry => DateKeys.isWithin(entry.date, range.from, range.to))
+      .sort((a, b) => a.date.localeCompare(b.date))
+    return this.clone(entries)
   }
 }
 
